@@ -1,51 +1,48 @@
-const express=require("express");
-const path=require('path')
-const cookieParser= require("cookie-parser")
-const{connectToMongoDB}= require("./connect");
-const{checkForAuthentication,restrictTo}= require("./middlewares/auth")
+import express, { json, urlencoded } from "express";
+import { resolve } from "path";
+import cookieParser from "cookie-parser";
+import { connectToMongoDB } from "./connect";
+import { checkForAuthentication, restrictTo } from "./middlewares/auth";
 
-
-const URL=require('./models/url');
+import URL from "./models/url";
 
 //routes
-const urlRoute = require('./routes/url');
-const staticRoute= require("./routes/staticRouter");
-const userRoute =require("./routes/user")
+import urlRoute from "./routes/url";
+import staticRoute from "./routes/staticRouter";
+import userRoute from "./routes/user";
 
-const app=express();
-const PORT=8001;
+const app = express();
+const PORT = 8001;
 
-connectToMongoDB('mongodb://localhost:27017/short-url')
-.then(()=>console.log("connected to MongoDB"));
+connectToMongoDB("mongodb://localhost:27017/short-url").then(() =>
+  console.log("connected to MongoDB")
+);
 
-app.set("view engine","ejs");
-app.set("views",path.resolve("./views"));
+app.set("view engine", "ejs");
+app.set("views", resolve("./views"));
 
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(checkForAuthentication);
 
+app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRoute);
+app.use("/user", userRoute);
+app.use("/", staticRoute);
 
-app.use("/url", restrictTo(["NORMAL","ADMIN"]), urlRoute);
-app.use("/user",userRoute);
-app.use('/',staticRoute);
+app.get("/url/:shortId", async (req, res) => {
+  const shortId = req.params.shortId;
+  const entry = await URL.findOneAndUpdate(
+    { shortId },
+    { $push: { visitHistory: { timestamp: Date.now() } } },
+    { new: true } // Return the updated document
+  );
 
+  if (!entry) {
+    return res.status(404).json({ error: "URL not found" });
+  }
 
-app.get('/url/:shortId', async (req, res) => {
-    const shortId = req.params.shortId;
-    const entry = await URL.findOneAndUpdate(
-        { shortId },
-        { $push: { visitHistory: { timestamp: Date.now() } } },
-        { new: true } // Return the updated document
-    );
-
-    if (!entry) {
-        return res.status(404).json({ error: 'URL not found' });
-    }
-
-    res.redirect(entry.redirectURL);
+  res.redirect(entry.redirectURL);
 });
 
-
-app.listen(PORT,()=>console.log(`SERVER started on PORT: ${PORT}`));
+app.listen(PORT, () => console.log(`SERVER started on PORT: ${PORT}`));
