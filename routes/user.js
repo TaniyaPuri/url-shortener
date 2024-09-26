@@ -6,4 +6,4 @@ const router = Router();
 router.post("/", handleUserSignup);
 router.post("/login", handleUserLogin);
 
-export default router;
+module.express = router;
