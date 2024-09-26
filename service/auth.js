@@ -1,29 +1,27 @@
-const jwt=require("jsonwebtoken");
-const secret="taniya!@#$";
+import { sign, verify } from "jsonwebtoken";
+const secret = "taniya!@#$";
 
-function setUser(user)
-{
-    return jwt.sign(
+function setUser(user) {
+  return sign(
     {
-        _id: user._id,
-        email: user.email,
-        role: user.role,
+      _id: user._id,
+      email: user.email,
+      role: user.role,
     },
     secret
-);
+  );
 }
 
-function getUser(token)
-{
-   if(!token) return null;
-   try {
-    return jwt.verify(token,secret);
-   }
-   catch(error) {
+function getUser(token) {
+  if (!token) return null;
+  try {
+    return verify(token, secret);
+  } catch (error) {
     return null;
-   }
+  }
 }
 
-module.exports= {
-    setUser,getUser,
+export default {
+  setUser,
+  getUser,
 };

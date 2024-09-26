@@ -1,39 +1,30 @@
-const { getUser } = require('../service/auth');
+const { getUser } = require("../service/auth");
 
 function checkForAuthentication(req, res, next) {
-    const tokenCookie = req.cookies?.token;
-    req.user = null;
+  const tokenCookie = req.cookies?.token;
+  req.user = null;
 
-    if (!tokenCookie) return next(); // No token means the user is not authenticated
+  if (!tokenCookie) return next();
 
-    const token = tokenCookie;
-    const user = getUser(token);
+  const token = tokenCookie;
+  const user = getUser(token);
 
-    // If user is null, it means the token is invalid or expired
-    if (!user) return next(); // Proceed to the next middleware or route handler
-
-    req.user = user; // Set the user object in the request
-    return next();
+  req.user = user;
+  return next();
 }
 
-// Middleware to restrict access based on user roles
+//ADMIN, NORMAL
 function restrictTo(roles = []) {
-    return function(req, res, next) {
-        if (!req.user) {
-            // User is not authenticated
-            return res.redirect("/login");
-        }
+  return function (req, res, next) {
+    if (!req.user) return res.redirect("/login");
 
-        if (!roles.includes(req.user.role)) {
-            // User's role is not allowed to access this route
-            return res.status(403).json({ error: "Forbidden: You do not have permission to access this resource." });
-        }
+    if (roles.includes(req.user.role)) return res.end("Unauthorized");
 
-        return next(); // User is authorized, proceed to the next middleware or route handler
-    };
+    return next();
+  };
 }
 
 module.exports = {
-    checkForAuthentication,
-    restrictTo,
+  checkForAuthentication,
+  restrictTo,
 };
