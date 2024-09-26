@@ -1,35 +1,30 @@
-const {getUser}= require('../service/auth')
+import { getUser } from "../service/auth";
 
-function checkForAuthentication(req,res,next)
-{
-    const tokenCookie= req.cookies?.token;
-    req.user=null;
+function checkForAuthentication(req, res, next) {
+  const tokenCookie = req.cookies?.token;
+  req.user = null;
 
-    if(!tokenCookie) return next();
-        
-    const token= tokenCookie;
-    const user=getUser(token);
+  if (!tokenCookie) return next();
 
-    req.user=user;
-    return next();
+  const token = tokenCookie;
+  const user = getUser(token);
+
+  req.user = user;
+  return next();
 }
 
 //ADMIN, NORMAL
-function restrictTo(roles=[])
-{
-    return function(req,res,next)
-    {
-        if(!req.user) return res.redirect("/login");
+function restrictTo(roles = []) {
+  return function (req, res, next) {
+    if (!req.user) return res.redirect("/login");
 
-        if(roles.includes(req.user.role)) return res.end("Unauthorized");
+    if (roles.includes(req.user.role)) return res.end("Unauthorized");
 
-        return next();
-    };
-
+    return next();
+  };
 }
 
-module.exports=
-{
-    checkForAuthentication,
-    restrictTo,
+export default {
+  checkForAuthentication,
+  restrictTo,
 };
