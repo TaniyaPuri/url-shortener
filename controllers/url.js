@@ -1,5 +1,5 @@
-const { nanoid } = require("nanoid");
-const URL = require("../models/url");
+import nanoid from "nanoid";
+const URL = require("../models/url.js");
 async function handleGenerateNewShortURL(req, res) {
   const body = req.body;
   if (!body.url) return res.status(400).json({ error: "URL is required" });

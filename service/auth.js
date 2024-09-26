@@ -1,4 +1,6 @@
-import { sign, verify } from "jsonwebtoken";
+import pkg from 'jsonwebtoken';
+const { sign, verify } = pkg;
+
 const secret = "taniya!@#$";
 
 function setUser(user) {
@@ -21,7 +23,7 @@ function getUser(token) {
   }
 }
 
-export default {
+export {
   setUser,
   getUser,
 };

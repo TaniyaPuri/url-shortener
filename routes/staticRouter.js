@@ -1,5 +1,4 @@
-const express = require("express");
-
+import { Router } from "express";
 const router = Router();
 
 router.get("/admin/urls", restrictTo(["ADMIN"]), async (req, res) => {
