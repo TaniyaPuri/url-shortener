@@ -1,3 +1,4 @@
+// validators.js
 import { z } from "zod";
 
 // Define the Zod schema to validate the decoded token's structure
