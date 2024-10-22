@@ -26,5 +26,3 @@ const urlSchema = new Schema(
 
 export const URL = model("url", urlSchema);
 
-
-

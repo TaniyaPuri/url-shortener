@@ -1,9 +1,15 @@
 import { Router } from "express";
-import { handleUserSignup, handleUserLogin } from "../controllers/user.js";
+
+import { handleUserSignup, handleUserLogin } from "../controllers/user";  
+
 
 const router = Router();
 
 router.post("/", handleUserSignup);
 router.post("/login", handleUserLogin);
 
-module.express = router;
+
+export default router;
+
+
+
