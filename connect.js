@@ -4,6 +4,8 @@ async function connectToMongoDB(url) {
   return connect(url);
 }
 
+
 export default {
+
   connectToMongoDB,
 };

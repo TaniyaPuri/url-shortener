@@ -1,5 +1,9 @@
 import { Router } from "express";
 
+
+const router = Router();
+
+
 const router = Router();
 
 router.get("/admin/urls", restrictTo(["ADMIN"]), async (req, res) => {
