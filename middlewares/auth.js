@@ -1,7 +1,7 @@
 // authMiddleware.js
 import jwt from "jsonwebtoken";
 import { getUser } from "../service/auth";
-import { validateToken } from "../validation.js";
+import { validateToken } from "./validators"; // Import the validation logic
 
 // Middleware to check for authentication using JWT and Zod validation
 function checkForAuthentication(req, res, next) {
