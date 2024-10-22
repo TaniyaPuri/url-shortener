@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { create, findOne } from "../models/user";
 import { setUser } from "../service/auth";
 
