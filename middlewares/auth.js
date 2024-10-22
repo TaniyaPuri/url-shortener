@@ -1,12 +1,15 @@
-// authMiddleware.js
+
 import jwt from "jsonwebtoken";
 import { getUser } from "../service/auth";
 import { validateToken } from "../validation.js";
 
-// Middleware to check for authentication using JWT and Zod validation
+
+import  {getUser}  from "../service/auth.js";
+
 function checkForAuthentication(req, res, next) {
   const tokenCookie = req.cookies?.token;
   req.user = null;
+
 
   if (!tokenCookie) return next(); // No token, proceed to the next middleware
 
@@ -41,11 +44,30 @@ function restrictTo(roles = []) {
       return res.status(403).end("Unauthorized");
     }
 
+  if (!tokenCookie) return next();
+
+  const token = tokenCookie;
+  const user = getUser(token);
+
+  req.user = user;
+  return next();
+}
+
+//ADMIN, NORMAL
+function restrictTo(roles = []) {
+  return function (req, res, next) {
+    if (!req.user) return res.redirect("/login");
+
+    if (roles.includes(req.user.role)) return res.end("Unauthorized");
+
+
     return next();
   };
 }
 
+
 export default {
+
   checkForAuthentication,
   restrictTo,
 };

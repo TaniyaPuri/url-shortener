@@ -24,6 +24,5 @@ const urlSchema = new Schema(
   { timestamps: true }
 );
 
-const URL = model("url", urlSchema);
+export const URL = model("url", urlSchema);
 
-export default URL;

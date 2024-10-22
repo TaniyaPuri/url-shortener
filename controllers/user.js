@@ -1,9 +1,19 @@
+
 import { create, findOne } from "../models/user";
 import { setUser } from "../service/auth";
 
 async function handleUserSignup(req, res) {
   const { name, email, password } = req.body;
   await create({
+
+import { v4 as uuidv4 } from "uuid";
+import { URL } from "../models/url.js";
+import { setUser } from "../service/auth.js";
+
+async function handleUserSignup(req, res) {
+  const { name, email, password } = req.body;
+  await URL.create({
+
     name,
     email,
     password,
@@ -12,7 +22,11 @@ async function handleUserSignup(req, res) {
 }
 async function handleUserLogin(req, res) {
   const { email, password } = req.body;
+
   const user = await findOne({ email, password });
+
+  const user = await URL.findOne({ email, password });
+
 
   if (!user)
     return res.render("login", {
@@ -25,7 +39,9 @@ async function handleUserLogin(req, res) {
   return res.redirect("/");
 }
 
+
 export default {
+
   handleUserSignup,
   handleUserLogin,
 };

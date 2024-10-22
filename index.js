@@ -1,6 +1,7 @@
 import express, { json, urlencoded } from "express";
 import { resolve } from "path";
 import cookieParser from "cookie-parser";
+
 import { connectToMongoDB } from "./connect";
 import { checkForAuthentication, restrictTo } from "./middlewares/auth";
 
@@ -10,6 +11,17 @@ import URL from "./models/url";
 import urlRoute from "./routes/url";
 import staticRoute from "./routes/staticRouter";
 import userRoute from "./routes/user";
+
+import { connectToMongoDB } from "./connect.js";
+import { checkForAuthentication, restrictTo } from "./middlewares/auth.js";
+
+import {URL} from "./models/url.js";
+
+//routes
+import {urlRoute} from "./routes/url.js";
+import {router} from "./routes/staticRouter.js";
+import {userRoute} from "./routes/user.js";
+
 
 const app = express();
 const PORT = 8001;
@@ -28,7 +40,11 @@ app.use(checkForAuthentication);
 
 app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRoute);
 app.use("/user", userRoute);
+
 app.use("/", staticRoute);
+
+app.use("/", router);
+
 
 app.get("/url/:shortId", async (req, res) => {
   const shortId = req.params.shortId;
